@@ -1,0 +1,13 @@
+matplotlib==3.2.1
+pandas==1.0.3
+plotly==4.8.1
+streamlit==0.71.0
+numpy==1.16.1
+fxcmpy==1.2.6
+python-socketio==4.5.1
+google-cloud-bigquery==1.24.0
+google-cloud-storage==1.26.0
+google-cloud-bigquery-storage==0.8.0
+grpc-google-iam-v1==0.12.3
+grpcio==1.28.1
+grpcio-gcp==0.2.2
