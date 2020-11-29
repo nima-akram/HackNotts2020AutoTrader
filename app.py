@@ -13,6 +13,11 @@ import numpy as np
 import pickle
 import os
 
+from twilio.rest import Client
+from twilio_cred import account_sid, authtoken
+
+client = Client(account_sid, authtoken)
+
 # get relevant data
 def get_data(output_directory):
     '''
@@ -210,7 +215,7 @@ def performance_segmented(closed_trades):
 
 def app():
 
-    st.title('Automated trading strategies')
+    st.title('retro-trade.io')
 
     # Select strategy
     indicators = tuple([k for k in mapper.keys()])
@@ -257,6 +262,8 @@ def app():
     with col2:
         to_date = st.date_input('End date').strftime("%Y-%m-%d")
 
+    phone_number = st.text_input('Your Phone Number (optional) (include +44, must be Twilio verified)', '+441234567890')
+
     # Build output JSON
     params = {
     	  'instrument': instrument,
@@ -299,7 +306,9 @@ def app():
         print(closed_trades)
         print('\n\t', margin_history)
         summary_stats = summary_statistics(closed_trades, margin_history)
+        all_text = ""
         for key, value in summary_stats.items():
+            all_text += f"\n---\n{key}: {value}"
             st.text(f"{key}: {value}")
 
         # profit / loss graph
@@ -317,6 +326,17 @@ def app():
         # detailed view of every single closed trade
         st.subheader('Detailed Performance')
         st.write(closed_trades)
+
+        all_text = f"Chosen Strategy: {strategy}\n---Chosen Instrument: {instrument}\n---From Date: {from_date}\n--- To Date: {to_date}" + all_text
+
+        try:
+            message = client.messages.create(
+                to=(phone_number.replace(" ", "")),
+                from_="+447480486321",
+                body=all_text
+            )
+        except:
+            print('No valid number provided')
 
 if __name__ == '__main__':
 
